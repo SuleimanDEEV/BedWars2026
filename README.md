@@ -1,7 +1,7 @@
 # 🛡️ BEDWARS2026
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/SuleimanDEEV/BedWars2026/main/bedwars2026.png" width="900"/>
+<img src="https://raw.githubusercontent.com/SuleimanDEEV/BedWars2026/refs/heads/main/bedwars2026.png?token=GHSAT0AAAAAADXINBL65NOJ5WDZTBTVSF3C2NQWVMQ" width="900"/>
 </p>
 
 <p align="center">
