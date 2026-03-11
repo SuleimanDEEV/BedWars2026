@@ -1,7 +1,7 @@
 # 🛡️ BEDWARS2026
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/SuleimanDEEV/BedWars2026/refs/heads/main/bedwars2026.png?token=GHSAT0AAAAAADXINBL65NOJ5WDZTBTVSF3C2NQWVMQ" width="900"/>
+<img src="https://raw.githubusercontent.com/SULEIMANDEEV/BedWars2026/main/bedwars2026.png" width="900"/>
 </p>
 
 <p align="center">
@@ -15,116 +15,118 @@
 
 ---
 
-# ⚔️ BEDWARS2026
+# ⚔️ Sobre o Projeto
 
-A **modern, optimized and dependency-free BedWars implementation** for Minecraft servers.
+**BEDWARS2026** é uma implementação **moderna, otimizada e sem dependências externas** do modo de jogo **BedWars** para servidores Minecraft.
 
-Inspired by **BedWars1058**, but completely redesigned with a **clean modular architecture and zero external dependencies**.
+Este projeto é uma **versão aprimorada do BedWars1058**, reestruturado com uma arquitetura mais limpa, melhor desempenho e maior facilidade de manutenção.
 
----
-
-## 🚀 Highlights
-
-✔ Fully self-contained  
-✔ Hypixel-style mechanics  
-✔ High performance  
-✔ Clean architecture  
-✔ Network ready  
+O objetivo do projeto é fornecer um **sistema de BedWars nível Hypixel**, pronto para redes de servidores Minecraft.
 
 ---
 
-# ⚙️ Core Features
+# 🚀 Melhorias em relação ao BedWars1058
 
-### 🎮 Game Mechanics
-
-- Bed protection system
-- Team based combat
-- Final kills system
-- Respawn mechanics
-- Spectator mode
-- Sudden death phase
+✔ Remoção de dependências externas  
+✔ Arquitetura mais limpa e organizada  
+✔ Melhor performance nas arenas  
+✔ Código mais fácil de manter  
+✔ Estrutura modular  
+✔ Preparado para redes de servidores  
 
 ---
 
-### 🏝 Arena System
+# ⚙️ Funcionalidades Principais
 
-- Multi arena support
-- Dynamic arena loading
-- Arena groups (Solo, Doubles, etc)
-- Map restore system
-- Generator configuration
-- Team spawn protection
+## 🎮 Mecânicas do Jogo
 
----
-
-### 🛒 Shop System
-
-Fully configurable shop system:
-
-- Quick buy
-- Permanent upgrades
-- Item categories
-- Custom items
-- Command execution purchases
-- Item tier system
+- Sistema de proteção da cama
+- Combate entre equipes
+- Sistema de final kills
+- Sistema de respawn
+- Modo espectador
+- Fase de morte súbita
 
 ---
 
-### ⚔ Team Upgrades
+## 🏝 Sistema de Arenas
 
-Upgradeable team abilities:
-
-- Forge upgrades
-- Traps
-- Protection upgrades
-- Potion effects
-- Base upgrades
-- Custom upgrade tiers
+- Suporte a múltiplas arenas
+- Carregamento dinâmico de arenas
+- Grupos de arena (Solo, Dupla, etc)
+- Sistema de reset de mapa
+- Configuração de geradores
+- Proteção de spawn de equipe
 
 ---
 
-### 📊 Player Statistics
+## 🛒 Sistema de Loja
 
-Internal stats system including:
+Sistema de loja totalmente configurável:
 
-- Wins
-- Final kills
-- Beds destroyed
-- Games played
-- Playtime
-
-Accessible through **in-game GUI menus**.
-
----
-
-### 👥 Party System
-
-BEDWARS2026 includes a **native party system**:
-
-- Party creation
-- Player invites
-- Team join system
-- Party queue system
-
-No external plugins required.
+- Quick Buy
+- Upgrades permanentes
+- Categorias de itens
+- Itens personalizados
+- Compras com execução de comandos
+- Sistema de tiers de itens
 
 ---
 
-### 📊 Scoreboard System
+## ⚔ Upgrades de Equipe
 
-Custom internal scoreboard implementation:
+Sistema completo de upgrades:
 
-- Dynamic scoreboard updates
-- Per-arena scoreboard
-- Per-player scoreboard
-- Fully configurable layouts
+- Upgrade de forge
+- Sistema de traps
+- Upgrades de proteção
+- Efeitos de poção
+- Melhorias da base
+- Níveis de upgrade configuráveis
 
 ---
 
-# 🧠 Architecture
+## 📊 Estatísticas do Jogador
 
-BEDWARS2026 follows a **modular backend architecture** designed for scalability.
+Sistema interno de estatísticas:
 
+- Vitórias
+- Final Kills
+- Camas destruídas
+- Partidas jogadas
+- Tempo de jogo
+
+Tudo acessível através de **menus GUI dentro do jogo**.
+
+---
+
+## 👥 Sistema de Party
+
+O **BEDWARS2026** possui sistema de party nativo:
+
+- Criação de party
+- Convite de jogadores
+- Entrada em partidas com party
+- Sistema de fila em grupo
+
+Nenhum plugin externo é necessário.
+
+---
+
+## 📊 Sistema de Scoreboard
+
+Sistema interno de scoreboard:
+
+- Atualização dinâmica
+- Scoreboard por arena
+- Scoreboard por jogador
+- Layouts totalmente configuráveis
+
+---
+
+# 🧠 Arquitetura do Projeto
+
+O projeto utiliza uma **arquitetura modular**, facilitando manutenção e expansão.
 
 BedWars2026
 │
@@ -141,22 +143,9 @@ BedWars2026
 │
 ├── game
 │ ├── arena
-│ │ ├── Arena
-│ │ ├── ArenaManager
-│ │ └── ArenaState
-│ │
 │ ├── teams
-│ │ ├── Team
-│ │ └── TeamManager
-│ │
 │ ├── generators
-│ │ ├── Generator
-│ │ └── GeneratorManager
-│ │
 │ └── phases
-│ ├── LobbyPhase
-│ ├── GamePhase
-│ └── EndPhase
 │
 ├── player
 │ ├── profiles
@@ -175,110 +164,103 @@ BedWars2026
 │
 └── utils
 
-This architecture ensures:
 
-• maintainable code  
-• scalable modules  
-• easier debugging  
-• easier feature expansion  
+Essa arquitetura permite:
+
+- código mais organizado
+- fácil manutenção
+- expansão de funcionalidades
+- melhor escalabilidade
 
 ---
 
 # ⚡ Performance
 
-BEDWARS2026 was designed with **server performance in mind**.
+O **BEDWARS2026** foi projetado pensando em **alto desempenho para servidores Minecraft**.
 
-Performance improvements include:
+Otimizações incluem:
 
-- optimized arena loops
-- internal utility systems
-- reduced memory allocations
-- minimal async blocking
-- faster arena resets
+- loops de arena otimizados
+- menor alocação de memória
+- sistemas internos mais rápidos
+- menos bloqueios assíncronos
+- reset de arenas mais rápido
 
 ---
 
-# 📦 Requirements
-
+# 📦 Requisitos
 
 Java 11+
 Spigot / Paper 1.8.x
 
-No external plugins required.
+
+Nenhum plugin externo é necessário.
 
 ---
 
 # 🗺 Roadmap
 
-### ✔ Phase 1 — Core Development
+### ✔ Fase 1 — Sistemas Base
 
-- Arena system
-- Team system
-- Generator system
-- Basic shop system
-- Basic upgrades
+- Sistema de arenas
+- Sistema de equipes
+- Sistema de geradores
+- Loja básica
+- Upgrades básicos
 
----
+### ✔ Fase 2 — Sistemas de Gameplay
 
-### ✔ Phase 2 — Gameplay Systems
+- Sistema de party
+- Estatísticas
+- Scoreboard
+- Modo espectador
+- GUI de seleção de arenas
 
-- Party system
-- Player statistics
-- Scoreboard system
-- Spectator mode
-- Arena GUI selector
+### 🔄 Fase 3 — Sistemas Avançados
 
----
+- Cosméticos avançados
+- Sistema de NPC
+- Integração com lobby
+- Melhorias de matchmaking
+- Otimizações adicionais
 
-### 🔄 Phase 3 — Advanced Systems
+### 🚀 Fase 4 — Recursos para Network
 
-- Advanced cosmetics
-- NPC join system
-- Lobby integration
-- Matchmaking improvements
-- Performance optimizations
-
----
-
-### 🚀 Phase 4 — Network Features
-
-- Proxy compatibility
-- Cross-server stats
-- Global matchmaking
-- Advanced API
+- Compatibilidade com proxy
+- Estatísticas cross-server
+- Matchmaking global
+- API avançada
 
 ---
 
-# 👨‍💻 Developer
+# 👨‍💻 Desenvolvedor
 
 **SuleimanDEV**
 
-Backend Developer  
+Desenvolvedor Backend  
 Java & Kotlin Developer  
 Minecraft Systems Architect
 
 ---
 
-# 📜 License
+# 📜 Licença
 
-This project is inspired by **BedWars1058 by Andrei1058**, originally released under **GNU GPL v3**.
+Este projeto é uma atualização do **BedWars1058 de Andrei1058**, distribuído sob licença **GNU GPL v3**.
 
-BEDWARS2026 introduces major architectural changes while respecting the open-source license.
-
----
-
-# ⭐ Contributing
-
-Contributions are welcome.
-
-Steps:
-
-1. Fork the repository
-2. Create a new branch
-3. Submit a pull request
+O **BEDWARS2026** introduz melhorias estruturais mantendo o respeito à licença open-source original.
 
 ---
 
-# 💡 Project Vision
+# ⭐ Contribuições
 
-BEDWARS2026 aims to become a **modern BedWars foundation for Minecraft networks**, providing a powerful and dependency-free system ready for large scale servers.
+Contribuições são bem-vindas.
+
+1. Faça um fork do projeto  
+2. Crie uma branch  
+3. Envie um Pull Request  
+
+---
+
+# 💡 Visão do Projeto
+
+O **BEDWARS2026** pretende se tornar uma **base moderna de BedWars para redes Minecraft**, oferecendo um sistema poderoso, modular e sem dependências externas.
