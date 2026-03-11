@@ -1,0 +1,35 @@
+package com.suleimandev.bedwars2026.api.tasks;
+
+import com.suleimandev.bedwars2026.api.arena.IArena;
+import org.bukkit.scheduler.BukkitTask;
+
+/*
+ * BedWars2026
+ * Copyright (c) 2026 SuleimanDEV
+ *
+ * Unauthorized copying of this file, via any medium
+ * is strictly prohibited.
+ *
+ * Proprietary and confidential.
+ */
+
+public interface PlayingTask {
+
+    IArena getArena();
+
+    BukkitTask getBukkitTask();
+
+    /**
+     * Get bukkit task id.
+     */
+    int getTask();
+
+    int getBedsDestroyCountdown();
+
+    int getDragonSpawnCountdown();
+
+    int getGameEndCountdown();
+
+    void cancel();
+}
+

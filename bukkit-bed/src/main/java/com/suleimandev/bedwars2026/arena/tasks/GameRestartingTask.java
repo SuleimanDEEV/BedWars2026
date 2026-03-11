@@ -1,0 +1,143 @@
+package com.suleimandev.bedwars2026.arena.tasks;
+
+import com.suleimandev.bedwars2026.BukkitBedPlugin;
+import com.suleimandev.bedwars2026.api.arena.generator.IGenerator;
+import com.suleimandev.bedwars2026.api.arena.shop.ShopHolo;
+import com.suleimandev.bedwars2026.api.arena.team.ITeam;
+import com.suleimandev.bedwars2026.api.configuration.ConfigPath;
+import com.suleimandev.bedwars2026.api.server.ServerType;
+import com.suleimandev.bedwars2026.api.tasks.RestartingTask;
+import com.suleimandev.bedwars2026.arena.Arena;
+import com.suleimandev.bedwars2026.arena.Misc;
+import com.suleimandev.bedwars2026.configuration.Sounds;
+import com.suleimandev.bedwars2026.support.paper.TeleportManager;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
+import java.util.ArrayList;
+import java.util.Random;
+
+/*
+ * BedWars2026
+ * Copyright (c) 2026 SuleimanDEV
+ *
+ * Unauthorized copying of this file, via any medium
+ * is strictly prohibited.
+ *
+ * Proprietary and confidential.
+ */
+
+public class GameRestartingTask implements Runnable, RestartingTask {
+
+    private Arena arena;
+    private int restarting = BukkitBedPlugin.config.getInt(ConfigPath.GENERAL_CONFIGURATION_RESTART) + 5;
+    private final BukkitTask task;
+
+    public GameRestartingTask(@NotNull Arena arena) {
+        this.arena = arena;
+        task = Bukkit.getScheduler().runTaskTimer(BukkitBedPlugin.plugin, this, 0, 20L);
+        Sounds.playSound("game-end", arena.getPlayers());
+        Sounds.playSound("game-end", arena.getSpectators());
+
+        // teleport to alive players
+        if (arena.getConfig().getGameOverridableBoolean(ConfigPath.GENERAL_GAME_END_TELEPORT_ELIMINATED)) {
+            if (!arena.getPlayers().isEmpty()) {
+                Random r = new Random();
+                for (Player spectator : arena.getSpectators()) {
+                    Player target = arena.getPlayers().get(r.nextInt(arena.getPlayers().size()));
+                    Location loc = target.getLocation().clone();
+                    loc.setDirection(target.getLocation().getDirection().multiply(-1));
+                    loc.add(0,2,0);
+
+                    TeleportManager.teleportC(spectator, loc, PlayerTeleportEvent.TeleportCause.PLUGIN);
+                }
+            }
+        }
+
+        // show eliminated players
+        if (arena.getConfig().getGameOverridableBoolean(ConfigPath.GENERAL_GAME_END_SHOW_ELIMINATED)) {
+            for (Player spectator : arena.getSpectators()) {
+                ITeam exTeam = arena.getExTeam(spectator.getUniqueId());
+                if (null == exTeam) {
+                    continue;
+                }
+                spectator.removePotionEffect(PotionEffectType.INVISIBILITY);
+                for (Player player : arena.getPlayers()) {
+                    BukkitBedPlugin.nms.spigotShowPlayer(player, spectator);
+                    BukkitBedPlugin.nms.spigotShowPlayer(spectator, player);
+                }
+            }
+        }
+    }
+
+    /**
+     * Get task ID
+     */
+    public int getTask() {
+        return task.getTaskId();
+    }
+
+    @Override
+    public int getRestarting() {
+        return restarting;
+    }
+
+    public Arena getArena() {
+        return arena;
+    }
+
+    @Override
+    public BukkitTask getBukkitTask() {
+        return task;
+    }
+
+    @Override
+    public void run() {
+
+        restarting--;
+
+        if (getArena().getPlayers().isEmpty() && restarting > 9) restarting = 9;
+        if (restarting == 7) {
+            for (Player on : new ArrayList<>(getArena().getPlayers())) {
+                getArena().removePlayer(on, BukkitBedPlugin.getServerType() == ServerType.BUNGEE);
+            }
+            for (Player on : new ArrayList<>(getArena().getSpectators())) {
+                getArena().removeSpectator(on, BukkitBedPlugin.getServerType() == ServerType.BUNGEE);
+            }
+        } else if (restarting == 4) {
+            ShopHolo.clearForArena(getArena());
+            for (Entity e : getArena().getWorld().getEntities()) {
+                if (e.getType() == EntityType.PLAYER) {
+                    Player p = (Player) e;
+                    Misc.moveToLobbyOrKick(p, getArena(), true);
+                    if (getArena().isSpectator(p)) getArena().removeSpectator(p, false);
+                    if (getArena().isPlayer(p)) getArena().removePlayer(p, false);
+                }
+            }
+            for (IGenerator eg : getArena().getOreGenerators()) {
+                eg.disable();
+            }
+            for (ITeam t : getArena().getTeams()) {
+                for (IGenerator eg : t.getGenerators()) {
+                    eg.disable();
+                }
+            }
+        } else if (restarting == 0) {
+            getArena().restart();
+            task.cancel();
+            arena = null;
+        }
+    }
+
+    public void cancel() {
+        task.cancel();
+    }
+
+}
+

@@ -1,0 +1,8 @@
+name: BedWars2026
+api-version: '1.13'
+version: ${project.version}
+author: SuleimanDEV
+description: Bukkit Bed runtime by SuleimanDEV
+main: com.suleimandev.bedwars2026.BukkitBedPlugin
+softdepend: [Vault,PlaceholderAPI,Citizens,SlimeWorldManager,Enhanced-SlimeWorldManager]
+#load: STARTUP

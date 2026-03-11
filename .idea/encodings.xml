@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/commons-bed/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/commons-bed/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/bukkit-bed/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/bukkit-bed/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resetadapter_aswm/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resetadapter_aswm/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resetadapter_slime/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resetadapter_slime/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resetadapter_slimepaper/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resetadapter_slimepaper/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_1_12_R1/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_1_12_R1/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_1_8_R3/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_1_8_R3/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_common/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_v1_16_R3/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_v1_16_R3/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_v1_17_R1/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_v1_17_R1/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_v1_18_R2/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_v1_18_R2/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_v1_19_R2/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_v1_19_R2/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_v1_19_R3/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_v1_19_R3/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_v1_20_R1/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_v1_20_R1/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_v1_20_R2/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_v1_20_R2/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_v1_20_R3/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_v1_20_R3/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_v1_20_R4/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/versionsupport_v1_20_R4/src/main/resources" charset="UTF-8" />
+  </component>
+</project>

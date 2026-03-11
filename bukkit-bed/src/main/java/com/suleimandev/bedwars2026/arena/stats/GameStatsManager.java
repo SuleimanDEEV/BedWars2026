@@ -1,0 +1,137 @@
+package com.suleimandev.bedwars2026.arena.stats;
+
+import com.suleimandev.bedwars2026.BukkitBedPlugin;
+import com.suleimandev.bedwars2026.api.arena.GameState;
+import com.suleimandev.bedwars2026.api.arena.IArena;
+import com.suleimandev.bedwars2026.arena.stats.defaults.PlayerGameStatsContainer;
+import com.suleimandev.bedwars2026.api.arena.stats.DefaultStatistics;
+import com.suleimandev.bedwars2026.api.arena.stats.GameStatisticProvider;
+import com.suleimandev.bedwars2026.api.arena.stats.GameStatsHolder;
+import com.suleimandev.bedwars2026.api.arena.stats.PlayerGameStats;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import java.util.*;
+import java.util.stream.Collectors;
+
+/*
+ * BedWars2026
+ * Copyright (c) 2026 SuleimanDEV
+ *
+ * Unauthorized copying of this file, via any medium
+ * is strictly prohibited.
+ *
+ * Proprietary and confidential.
+ */
+
+public class GameStatsManager implements GameStatsHolder {
+
+    private final HashMap<String, GameStatisticProvider<?>> registeredStats = new HashMap<>();
+    private final HashMap<UUID, Optional<PlayerGameStats>> playerSessionStats = new HashMap<>();
+
+    private final IArena arena;
+
+    public GameStatsManager(IArena arena) {
+        this.arena = arena;
+
+        for (DefaultStatistics statistic : DefaultStatistics.values()) {
+            if (statistic.isIncrementable()) {
+                register(new GenericStatistic(){
+                    @Override
+                    public String getIdentifier() {
+                        return statistic.toString();
+                    }
+                });
+            }
+        }
+    }
+
+    public void register(@NotNull GameStatisticProvider<?> statistic) {
+        if (statistic.getIdentifier().trim().isEmpty()) {
+            throw new RuntimeException("Identifier cannot be blank: "+ statistic.getClass().getName());
+        }
+        if (!statistic.getIdentifier().trim().equals(statistic.getIdentifier())) {
+            throw new RuntimeException("Identifier should not start/end with white spaces: "+statistic.getClass().getName());
+        }
+        if (null != registeredStats.getOrDefault(statistic.getIdentifier(), null)) {
+            throw new RuntimeException("Statistic already registered: "+statistic.getIdentifier());
+        }
+        registeredStats.put(statistic.getIdentifier(), statistic);
+        BukkitBedPlugin.debug("Registered new game statistic: "+statistic.getIdentifier());
+    }
+
+
+    @Override
+    public IArena getArena() {
+        return arena;
+    }
+
+    public PlayerGameStats init(@NotNull Player player) {
+        if (playerSessionStats.containsKey(player.getUniqueId())) {
+            throw new RuntimeException(player.getName()+" is already registered for game stats!");
+        }
+
+        PlayerGameStats stats = new PlayerGameStatsContainer(player);
+        this.registeredStats.forEach((id, provider) -> stats.registerStatistic(id, provider.getDefault()));
+
+        playerSessionStats.put(player.getUniqueId(), Optional.of(stats));
+        return stats;
+    }
+
+    @Override
+    public void unregisterPlayer(UUID uuid) {
+        if (getArena().getStatus() == GameState.restarting) {
+            throw new RuntimeException("You cannot unregister player stats during restarting phase!");
+        }
+        this.playerSessionStats.remove(uuid);
+    }
+
+    @Override
+    public @NotNull PlayerGameStats getCreate(@NotNull Player holder) {
+        Optional<PlayerGameStats> ps = playerSessionStats.getOrDefault(holder.getUniqueId(), Optional.empty());
+        if (!ps.isPresent()) {
+            PlayerGameStats stats = init(holder);
+            playerSessionStats.put(holder.getUniqueId(), Optional.of(stats));
+            return stats;
+        }
+        return ps.get();
+    }
+
+    @Override
+    public Optional<PlayerGameStats> get(@NotNull UUID holder) {
+        return playerSessionStats.getOrDefault(holder, Optional.empty());
+    }
+
+    @Override
+    public Collection<Optional<PlayerGameStats>> getTrackedPlayers() {
+        return Collections.unmodifiableCollection(playerSessionStats.values());
+    }
+
+    @Override
+    public List<Optional<PlayerGameStats>> getOrderedBy(@NotNull String statistic) {
+
+        //noinspection OptionalGetWithoutIsPresent
+        List<Optional<PlayerGameStats>> list = playerSessionStats.values().stream().filter(Optional::isPresent)
+                .filter(st -> st.get().getStatistic(statistic).isPresent())
+                .sorted(Comparator.comparing(a -> a.get().getStatistic(statistic).get()))
+                .collect(Collectors.toList());
+        Collections.reverse(list);
+        return list;
+    }
+
+    @Override
+    public boolean hasStatistic(String orderBy) {
+        return registeredStats.containsKey(orderBy);
+    }
+
+    @Override
+    public List<String> getRegistered() {
+        return Collections.unmodifiableList(new ArrayList<String>(registeredStats.keySet()));
+    }
+
+    @Override
+    public @Nullable GameStatisticProvider<?> getProvider(String statistic) {
+        return registeredStats.getOrDefault(statistic, null);
+    }
+}
+

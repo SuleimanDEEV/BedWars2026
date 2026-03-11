@@ -1,0 +1,42 @@
+package com.suleimandev.bedwars2026.api.events.team;
+
+import com.suleimandev.bedwars2026.api.arena.IArena;
+import com.suleimandev.bedwars2026.api.arena.team.ITeam;
+import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
+
+/*
+ * BedWars2026
+ * Copyright (c) 2026 SuleimanDEV
+ *
+ * Unauthorized copying of this file, via any medium
+ * is strictly prohibited.
+ *
+ * Proprietary and confidential.
+ */
+
+public class TeamEliminatedEvent extends Event {
+    private static final HandlerList HANDLERS = new HandlerList();
+
+    private final IArena arena;
+    private final ITeam team;
+
+    /**
+     * Called when all player on a team get killed and Bed is broken.
+     * @param arena the arena.
+     * @param team the eliminated team.
+     */
+
+    public TeamEliminatedEvent(IArena arena, ITeam team) {
+        this.arena = arena;
+        this.team = team;
+    }
+
+    public IArena getArena() {return arena;}
+
+    public ITeam getTeam() {return team;}
+
+    public HandlerList getHandlers() {return HANDLERS;}
+
+    public static HandlerList getHandlerList() {return HANDLERS;}
+}

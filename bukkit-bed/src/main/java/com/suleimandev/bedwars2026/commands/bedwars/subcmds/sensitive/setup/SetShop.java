@@ -1,0 +1,106 @@
+package com.suleimandev.bedwars2026.commands.bedwars.subcmds.sensitive.setup;
+
+import com.suleimandev.bedwars2026.api.CommonsBedApi;
+import com.suleimandev.bedwars2026.api.arena.team.TeamColor;
+import com.suleimandev.bedwars2026.api.command.ParentCommand;
+import com.suleimandev.bedwars2026.api.command.SubCommand;
+import com.suleimandev.bedwars2026.api.configuration.ConfigPath;
+import com.suleimandev.bedwars2026.api.server.SetupType;
+import com.suleimandev.bedwars2026.arena.Misc;
+import com.suleimandev.bedwars2026.arena.SetupSession;
+import com.suleimandev.bedwars2026.configuration.Permissions;
+import com.suleimandev.bedwars2026.configuration.Sounds;
+import net.md_5.bungee.api.chat.ClickEvent;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import static com.suleimandev.bedwars2026.BukkitBedPlugin.mainCmd;
+import static com.suleimandev.bedwars2026.commands.Misc.createArmorStand;
+import static com.suleimandev.bedwars2026.commands.Misc.removeArmorStand;
+
+/*
+ * BedWars2026
+ * Copyright (c) 2026 SuleimanDEV
+ *
+ * Unauthorized copying of this file, via any medium
+ * is strictly prohibited.
+ *
+ * Proprietary and confidential.
+ */
+
+public class SetShop extends SubCommand {
+
+    public SetShop(ParentCommand parent, String name) {
+        super(parent, name);
+        setArenaSetupCommand(true);
+        setPermission(Permissions.PERMISSION_SETUP_ARENA);
+    }
+
+    @Override
+    public boolean execute(String[] args, CommandSender s) {
+        if (s instanceof ConsoleCommandSender) return false;
+        Player p = (Player) s;
+        SetupSession ss = SetupSession.getSession(p.getUniqueId());
+        if (ss == null) {
+            //s.sendMessage("Ã‚Â§c Ã¢â€“Âª Ã‚Â§7You're not in a setup session!");
+            return false;
+        }
+        if (args.length == 0) {
+            String foundTeam = ss.getNearestTeam();
+            if (foundTeam.isEmpty()) {
+                p.sendMessage("");
+                p.sendMessage(ss.getPrefix() + ChatColor.RED + "Could not find any nearby team.");
+                p.spigot().sendMessage(Misc.msgHoverClick(ss.getPrefix() + "Make sure you set the team's spawn first!", ChatColor.WHITE + "Set a team spawn.", "/" + getParent().getName() + " " + getSubCommandName() + " ", ClickEvent.Action.SUGGEST_COMMAND));
+                p.spigot().sendMessage(Misc.msgHoverClick(ss.getPrefix() + "Or if you set the spawn and it wasn't found automatically try using: /bw " + getSubCommandName() + " <team>", "Set a team shop.", "/" + getParent().getName() + " " + getSubCommandName() + " ", ClickEvent.Action.SUGGEST_COMMAND));
+                p.spigot().sendMessage(Misc.msgHoverClick(ss.getPrefix() + "Other use: /bw setShop <teamName>", "Set a team shop.", "/" + getParent().getName() + " " + getSubCommandName() + " ", ClickEvent.Action.SUGGEST_COMMAND));
+                com.suleimandev.bedwars2026.BukkitBedPlugin.nms.sendTitle(p, " ", ChatColor.RED + "Could not find any nearby team.", 0, 60, 10);
+                Sounds.playSound(ConfigPath.SOUNDS_INSUFF_MONEY, p);
+            } else {
+                Bukkit.dispatchCommand(s, getParent().getName() + " " + getSubCommandName() + " " + foundTeam);
+            }
+        } else {
+            if (ss.getConfig().getYml().get("Team." + args[0]) == null) {
+                p.sendMessage(ss.getPrefix() + ChatColor.RED + "This team doesn't exist!");
+                if (ss.getConfig().getYml().get("Team") != null) {
+                    p.sendMessage(ss.getPrefix() + "Available teams: ");
+                    for (String team : Objects.requireNonNull(ss.getConfig().getYml().getConfigurationSection("Team")).getKeys(false)) {
+                        p.spigot().sendMessage(Misc.msgHoverClick(ChatColor.GOLD + " " + '*' + " " + ss.getTeamColor(team) + team + ChatColor.GRAY + " (click to set)", ChatColor.GRAY + "Set shop for " + TeamColor.getChatColor(Objects.requireNonNull(ss.getConfig().getYml().getString("Team." + team + ".Color"))) + team, "/" + mainCmd + " setShop " + team, ClickEvent.Action.RUN_COMMAND));
+                    }
+                }
+            } else {
+                String teamm = ss.getTeamColor(args[0]) + args[0];
+                if (ss.getConfig().getYml().get("Team." + args[0] + ".Shop") != null) {
+                    removeArmorStand("shop", ss.getConfig().getArenaLoc("Team." + args[0] + ".Shop"), ss.getConfig().getString("Team." + args[0] + ".Shop"));
+                }
+                createArmorStand(teamm + " " + ChatColor.GOLD + "SHOP SET", p.getLocation(), ss.getConfig().stringLocationArenaFormat(p.getLocation()));
+                ss.getConfig().saveArenaLoc("Team." + args[0] + ".Shop", p.getLocation());
+                p.sendMessage(ss.getPrefix() + "Shop set for: " + teamm);
+                if (ss.getSetupType() == SetupType.ASSISTED) {
+                    Bukkit.dispatchCommand(p, getParent().getName());
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public List<String> getTabComplete() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public boolean canSee(CommandSender s, CommonsBedApi api) {
+        if (s instanceof ConsoleCommandSender) return false;
+
+        Player p = (Player) s;
+        if (!SetupSession.isInSetupSession(p.getUniqueId())) return false;
+
+        return hasPermission(s);
+    }
+}
+

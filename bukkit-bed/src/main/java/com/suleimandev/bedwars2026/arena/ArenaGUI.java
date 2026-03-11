@@ -1,0 +1,225 @@
+package com.suleimandev.bedwars2026.arena;
+
+import com.suleimandev.bedwars2026.BukkitBedPlugin;
+import com.suleimandev.bedwars2026.api.arena.IArena;
+import com.suleimandev.bedwars2026.api.configuration.ConfigPath;
+import com.suleimandev.bedwars2026.api.language.Language;
+import com.suleimandev.bedwars2026.api.language.Messages;
+import com.suleimandev.bedwars2026.configuration.Sounds;
+import com.suleimandev.bedwars2026.listeners.arenaselector.ArenaSelectorListener;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
+
+/*
+ * BedWars2026
+ * Copyright (c) 2026 SuleimanDEV
+ *
+ * Unauthorized copying of this file, via any medium
+ * is strictly prohibited.
+ *
+ * Proprietary and confidential.
+ */
+
+public class ArenaGUI {
+
+    //Object[0] = inventory, Object[1] = group
+    //private static HashMap<Player, Object[]> refresh = new HashMap<>();
+    private static YamlConfiguration yml = BukkitBedPlugin.config.getYml();
+
+    private static HashMap<UUID, Long> antiCalledTwice = new HashMap<>();
+
+    //Object[0] = inventory, Object[1] = group
+    public static void refreshInv(Player p, IArena arena, int players) {
+        if (p == null) return;
+        if (p.getOpenInventory() == null) return;
+        if (!(p.getOpenInventory().getTopInventory().getHolder() instanceof ArenaSelectorHolder)) return;
+        ArenaSelectorHolder ash = ((ArenaSelectorHolder) p.getOpenInventory().getTopInventory().getHolder());
+
+        List<IArena> arenas;
+        if (ash.getGroup().equalsIgnoreCase("default")) {
+            arenas = new ArrayList<>(Arena.getArenas());
+        } else {
+            arenas = new ArrayList<>();
+            for (IArena a : Arena.getArenas()) {
+                if (a.getGroup().equalsIgnoreCase(ash.getGroup())) arenas.add(a);
+            }
+        }
+
+        arenas = Arena.getSorted(arenas);
+
+        int arenaKey = 0;
+        for (Integer slot : getUsedSlots()) {
+            ItemStack i;
+            p.getOpenInventory().getTopInventory().setItem(slot, new ItemStack(Material.AIR));
+            if (arenaKey >= arenas.size()) {
+                continue;
+            }
+
+            String status;
+            switch (arenas.get(arenaKey).getStatus()) {
+                case waiting:
+                    status = "waiting";
+                    break;
+                case playing:
+                    status = "playing";
+                    break;
+                case starting:
+                    status = "starting";
+                    break;
+                default:
+                    continue;
+            }
+
+            i = BukkitBedPlugin.nms.createItemStack(yml.getString(ConfigPath.GENERAL_CONFIGURATION_ARENA_SELECTOR_STATUS_MATERIAL.replace("%path%", status)),
+                    1, (short) yml.getInt(ConfigPath.GENERAL_CONFIGURATION_ARENA_SELECTOR_STATUS_DATA.replace("%path%", status)));
+            if (yml.getBoolean(ConfigPath.GENERAL_CONFIGURATION_ARENA_SELECTOR_STATUS_ENCHANTED.replace("%path%", status))) {
+                ItemMeta im = i.getItemMeta();
+                im.addEnchant(Enchantment.LURE, 1, true);
+                im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                i.setItemMeta(im);
+            }
+
+
+            ItemMeta im = i.getItemMeta();
+            im.setDisplayName(Language.getMsg(p, Messages.ARENA_GUI_ARENA_CONTENT_NAME).replace("{name}", arenas.get(arenaKey).getDisplayName()).replace("{map_name}", arenas.get(arenaKey).getArenaName()));
+            List<String> lore = new ArrayList<>();
+            for (String s : Language.getList(p, Messages.ARENA_GUI_ARENA_CONTENT_LORE)) {
+                if (!(s.contains("{group}") && arenas.get(arenaKey).getGroup().equalsIgnoreCase("default"))) {
+                    lore.add(s.replace("{on}", String.valueOf(arena != null ? arena == arenas.get(arenaKey) ? players : arenas.get(arenaKey).getPlayers().size() : arenas.get(arenaKey).getPlayers().size())).replace("{max}",
+                                    String.valueOf(arenas.get(arenaKey).getMaxPlayers())).replace("{status}", arenas.get(arenaKey).getDisplayStatus(Language.getPlayerLanguage(p)))
+                            .replace("{group}", arenas.get(arenaKey).getDisplayGroup(p)));
+                }
+            }
+            im.setLore(lore);
+            i.setItemMeta(im);
+            i = BukkitBedPlugin.nms.addCustomData(i, ArenaSelectorListener.ARENA_SELECTOR_GUI_IDENTIFIER + arenas.get(arenaKey).getArenaName());
+            p.getOpenInventory().getTopInventory().setItem(slot, i);
+            arenaKey++;
+        }
+        p.updateInventory();
+    }
+
+    public static void openGui(Player p, String group) {
+        if (preventCalledTwice(p)) return;
+        updateCalledTwice(p);
+        int size = BukkitBedPlugin.config.getYml().getInt(ConfigPath.GENERAL_CONFIGURATION_ARENA_SELECTOR_SETTINGS_SIZE);
+        if (size % 9 != 0) size = 27;
+        if (size > 54) size = 54;
+        ArenaSelectorHolder ash = new ArenaSelectorHolder(group);
+        Inventory inv = Bukkit.createInventory(ash, size, Language.getMsg(p, Messages.ARENA_GUI_INV_NAME));
+        //ash.setInv(inv);
+
+        String skippedSlotMaterial = BukkitBedPlugin.config.getString(ConfigPath.GENERAL_CONFIGURATION_ARENA_SELECTOR_STATUS_MATERIAL.replace("%path%", "skipped-slot"));
+        if (!skippedSlotMaterial.equalsIgnoreCase("none") && !skippedSlotMaterial.equalsIgnoreCase("air")) {
+            ItemStack i = BukkitBedPlugin.nms.createItemStack(skippedSlotMaterial,
+                    1, (byte) BukkitBedPlugin.config.getInt(ConfigPath.GENERAL_CONFIGURATION_ARENA_SELECTOR_STATUS_DATA.replace("%path%", "skipped-slot")));
+            i = BukkitBedPlugin.nms.addCustomData(i, "RUNCOMMAND_bw join random");
+            ItemMeta im = i.getItemMeta();
+            assert im != null;
+            im.setDisplayName(ChatColor.translateAlternateColorCodes(
+                    '&',
+                    Language.getMsg(p, Messages.ARENA_GUI_SKIPPED_ITEM_NAME)
+                            .replaceAll(
+                                    "\\{serverIp}",
+                                    BukkitBedPlugin.config.getString(ConfigPath.GENERAL_CONFIG_PLACEHOLDERS_REPLACEMENTS_SERVER_IP)
+                            )
+                            .replaceAll(
+                                    "\\{poweredBy}",
+                                    BukkitBedPlugin.config.getString(ConfigPath.GENERAL_CONFIG_PLACEHOLDERS_REPLACEMENTS_POWERED_BY)
+                            )
+            ));
+            List<String> lore = new ArrayList<>();
+            for (String line : Language.getList(p, Messages.ARENA_GUI_SKIPPED_ITEM_LORE)) {
+                line = line
+                        .replaceAll(
+                                "\\{serverIp}",
+                                BukkitBedPlugin.config.getString(ConfigPath.GENERAL_CONFIG_PLACEHOLDERS_REPLACEMENTS_SERVER_IP)
+                        )
+                        .replaceAll(
+                                "\\{poweredBy}",
+                                BukkitBedPlugin.config.getString(ConfigPath.GENERAL_CONFIG_PLACEHOLDERS_REPLACEMENTS_POWERED_BY)
+                        );
+                lore.add(line);
+            }
+            if (lore.size() > 0) {
+                im.setLore(lore);
+            }
+            im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            i.setItemMeta(im);
+
+            List<Integer> used = getUsedSlots();
+            for (int x = 0; x < inv.getSize(); x++) {
+                if (used.contains(x)) continue;
+                inv.setItem(x, i);
+            }
+        }
+
+        p.openInventory(inv);
+        refreshInv(p, null, 0);
+        //refresh.put(p, new Object[]{inv, group});
+        Sounds.playSound("arena-selector-open", p);
+    }
+
+    public static class ArenaSelectorHolder implements InventoryHolder {
+
+        private String group;
+        //private Inventory inv;
+
+        public ArenaSelectorHolder(String group) {
+            this.group = group;
+        }
+
+        public String getGroup() {
+            return group;
+        }
+
+        @Override
+        public Inventory getInventory() {
+            return null;
+        }
+
+        /*public void setInv(Inventory inv) {
+            this.inv = inv;
+        }*/
+    }
+
+    @NotNull
+    private static List<Integer> getUsedSlots() {
+        List<Integer> ls = new ArrayList<>();
+        for (String useSlot : BukkitBedPlugin.config.getString(ConfigPath.GENERAL_CONFIGURATION_ARENA_SELECTOR_SETTINGS_USE_SLOTS).split(",")) {
+            try {
+                int slot = Integer.parseInt(useSlot);
+                ls.add(slot);
+            } catch (Exception ignored) {
+            }
+        }
+        return ls;
+    }
+
+    private static boolean preventCalledTwice(@NotNull Player player) {
+        return antiCalledTwice.getOrDefault(player.getUniqueId(), 0L) > System.currentTimeMillis();
+    }
+
+    private static void updateCalledTwice(@NotNull Player player) {
+        if (antiCalledTwice.containsKey(player.getUniqueId())) {
+            antiCalledTwice.replace(player.getUniqueId(), System.currentTimeMillis() + 2000);
+        } else {
+            antiCalledTwice.put(player.getUniqueId(), System.currentTimeMillis() + 2000);
+        }
+    }
+}
+
