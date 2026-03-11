@@ -1,47 +1,35 @@
 # 🛡️ BEDWARS2026
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/SuleimanDEEV/BedWars2026/refs/heads/main/bedwars2026.png" alt="BedWars2026 Banner">
+<img src="https://raw.githubusercontent.com/SuleimanDEEV/BedWars2026/main/bedwars2026.png" width="900"/>
 </p>
 
-![Build](https://img.shields.io/github/actions/workflow/status/SULEIMANDEEV/BedWars2026/build.yml?style=for-the-badge)
-![Version](https://img.shields.io/github/v/release/SULEIMANDEEV/BedWars2026?style=for-the-badge)
-![Java](https://img.shields.io/badge/Java-11+-orange?style=for-the-badge)
-![Spigot](https://img.shields.io/badge/Spigot-1.8.x-yellow?style=for-the-badge)
-![License](https://img.shields.io/github/license/SULEIMANDEEV/BedWars2026?style=for-the-badge)
-![Stars](https://img.shields.io/github/stars/SULEIMANDEEV/BedWars2026?style=for-the-badge)
+<p align="center">
+<img src="https://img.shields.io/github/actions/workflow/status/SULEIMANDEEV/BedWars2026/build.yml?style=for-the-badge">
+<img src="https://img.shields.io/github/v/release/SULEIMANDEEV/BedWars2026?style=for-the-badge">
+<img src="https://img.shields.io/badge/Java-11+-orange?style=for-the-badge">
+<img src="https://img.shields.io/badge/Spigot-1.8.x-yellow?style=for-the-badge">
+<img src="https://img.shields.io/github/license/SULEIMANDEEV/BedWars2026?style=for-the-badge">
+<img src="https://img.shields.io/github/stars/SULEIMANDEEV/BedWars2026?style=for-the-badge">
+</p>
 
 ---
 
-# ⚔️ About
+# ⚔️ BEDWARS2026
 
-**BEDWARS2026** is a **modern, optimized and dependency-free implementation of the BedWars game mode for Minecraft servers**.
+A **modern, optimized and dependency-free BedWars implementation** for Minecraft servers.
 
-This project is a **complete evolution inspired by BedWars1058 by Andrei1058**, redesigned with a new architecture focused on:
-
-- performance
-- maintainability
-- scalability
-- clean code
-- zero external dependencies
-
-Unlike the original implementation, **BEDWARS2026 does not require external libraries**.
-
-Everything has been **rewritten internally** to keep the project **self-contained and optimized**.
+Inspired by **BedWars1058**, but completely redesigned with a **clean modular architecture and zero external dependencies**.
 
 ---
 
-# 🚀 Main Goals
+## 🚀 Highlights
 
-BEDWARS2026 aims to provide a **Hypixel-level BedWars system** for Minecraft networks while maintaining a **clean and modular backend architecture**.
-
-Main principles:
-
-• Fully self-contained  
-• Clean architecture  
-• High performance  
-• Easy maintainability  
-• Network-ready  
+✔ Fully self-contained  
+✔ Hypixel-style mechanics  
+✔ High performance  
+✔ Clean architecture  
+✔ Network ready  
 
 ---
 
